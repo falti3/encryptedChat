@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chat</title>
+	<link href="./chat.css" rel="stylesheet" type="text/css"/>
+	<link href="./colors.css" rel="stylesheet" type="text/css"/>
+	<script src="./helper.js"></script>
+	<script src="./chatNotifications.js"></script>
+	<script src="./transport.js"></script>
+	<script src="./cryptoStorage.js"></script>
+	<script src="./chat.js"></script>
+	<script>
+	window.onload = function()
+	{
+		c = new Chat();
+		counter = 0;
+		variableLoop();
+	};
+	login = function() {
+		var user = prompt('Username?', 'user1');
+		var password = prompt('Password?', 'user1');
+		c.login(user, password);
+	}
+	createAccount = function() {
+		var user = prompt('Username?', 'user1');
+		var password = prompt('Password?', 'user1');
+		c.createAccount(user, password);
+	}
+	addNewParticipant = function() {
+		var id = prompt('Id?', '2');
+		c.addParticipant(id);
+	}
+	removeParticipant = function(id) {
+		c.removeParticipant(id);
+	}
+	createChatSession = function() {
+		var ids = prompt('Ids? (example: 1;2;3)', '2');
+		var name = prompt('Roomname', 'test');
+		c.createChatSession(ids.split(";"), name);
+	}
+	variableLoop = function () {
+		var input = document.getElementById('messageText');
+		var sendButton = document.getElementById('sendButton');
+		var loginButton = document.getElementById('loginButton');
+		var createAccountButton = document.getElementById('createAccountButton');
+		var createSessionButton = document.getElementById('createSessionButton');
+		
+				var header = document.getElementById("header");
+
+		if (c.userObject.id == null) {
+		header.innerHTML="";
+			input.style.display = "none";
+			sendButton.style.display = "none";
+			createSessionButton.style.display = "none";
+			
+			loginButton.style.display = "";
+			createAccountButton.style.display = "";
+		}
+	
+		if (c.userObject.id != null) {
+
+		if (header.innerHTML == "" || header.innerHTML == null) {
+			header.innerHTML="<div class=\"chatbox boxSender boxColor1\"><p>Logged in as: "+c.userObject.name+"</p></div>";
+		}
+		
+			input.style.display = "";
+			sendButton.style.display = "";
+			createSessionButton.style.display = "";
+			
+			loginButton.style.display = "none";
+			createAccountButton.style.display = "none";
+		}
+		counter++;
+		setTimeout(variableLoop, 1000);
+	
+	}
+	
+	</script>
+</head>
+<body>
+<header id="header"></header>
+  <div class="contents">
+	 <div class="messagesContainer" id="chatboxContainer">
+
+	 	 <!--<div class="chatbox boxReceiver boxColor3">
+			<p>Hello. How are you today?</p>
+			<span class="time">Sender1 11:00</span>
+	 	</div>
+	 	<div class="chatbox boxReceiver boxColor4">
+			<p>Hello. How are you today?</p>
+			<span class="time">Sender2 11:00</span>
+	 	</div>--> 
+	 </div>
+    <div class="chatsContainer" id="chatsContainer">
+      Chats:<br/>
+      <!--<div class="chat">
+			<p>Chatroom 1</p>
+	 	</div>
+	 	<div class="chat">
+			<p>Chatroom 2</p>
+	 	</div>
+	 	<div class="chat chatActive">
+			<p>Chatroom 3</p>
+	 	</div>
+	 	<div class="chat">
+			<p>Chatroom 4</p>
+	 	</div>-->
+	 </div>
+  </div>
+  <footer>
+    <input type="text" id="messageText" onkeydown = "if (event.keyCode == 13) document.getElementById('sendButton').click()"/><button id="sendButton" onclick="var elem = document.getElementById('messageText');c.sendMessage(elem.value);elem.value = ''">send!</button>
+  	<button id="loginButton" onclick="login();">Login</button>
+  	<button id="createAccountButton" onclick="createAccount();">create account</button>
+  	<button id="createSessionButton" onclick="createChatSession();">create session</button>
+  	<button id="redistributeKey" onclick="c.distributeKey(c.cryptoStorage.chatId);">redistribute key</button>
+  	<button id="deleteChat" onclick="c.deleteChat(c.cryptoStorage.chatId);">delete chat</button>
+  
+  </footer>
+</body>
+</html>
